@@ -2,8 +2,6 @@
 /shelf/
 /workspace.xml
 # Datasource local storage ignored files
-/../../../../:\Projects\Graph\.idea/dataSources/
-/../../../../:\Projects\Graph\out/dataSources/
 /dataSources.local.xml
 /.idea
 /out
