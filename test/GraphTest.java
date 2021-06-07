@@ -1,69 +1,144 @@
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class GraphTest {
 
     @Test
-    void addNode() throws ElementAlreadyExistException {
-        Graph<Integer> gr = new Graph<>();
-        gr.addNode(12);
-        gr.addNode(15);
-        gr.addNode(2);
+    void addEdge()  {
+        Graph<Integer> gr = new Graph<>(4);
+        gr.addEdge(1,2,4);
+        gr.addEdge(2,4,5);
+        gr.addEdge(4,5,3);
+        gr.addEdge(4,3,1);
 
-        assertEquals(3,gr.nodes.size());
+        assertEquals(4, gr.getNumberOfVertices());
+        assertEquals(4,gr.getNumberOfEdges());
+
+    }
+    @Test
+    void bigGraphMST(){
+        Graph<Integer> g = new Graph<>(14);
+        g.addEdge(0, 1, 4);
+        g.addEdge(0, 7, 8);
+        g.addEdge(1, 2, 8);
+        g.addEdge(1, 7, 11);
+        g.addEdge(2, 3, 7);
+        g.addEdge(2, 8, 2);
+        g.addEdge(2, 5, 4);
+        g.addEdge(3, 4, 9);
+        g.addEdge(3, 5, 14);
+        g.addEdge(4, 5, 10);
+        g.addEdge(5, 6, 2);
+        g.addEdge(6, 7, 1);
+        g.addEdge(6, 8, 6);
+        g.addEdge(7, 8, 7);
+
+        System.out.println(g.minimumSpanningTree());
+        //Assertions.assertTrue(g.toString().contains("(5) w:4") && g.toString().contains("(2) w:4"));
     }
 
     @Test
-    void addSameValueException() throws ElementAlreadyExistException {
-
-        Graph<Integer> gr = new Graph<>();
-        gr.addNode(12);
-        gr.addNode(15);
-        gr.addNode(2);
-        assertThrows(ElementAlreadyExistException.class, () -> gr.addNode(2));
-        assertEquals(3,gr.nodes.size());
-    }
-
-
-    @Test
-    void addEdge() throws ElementAlreadyExistException {
-        Graph<Integer> gr = new Graph<>();
-        gr.addNode(12);
-        gr.addNode(15);
-        gr.addNode(2);
-        gr.addEdge(12,15,4);
-        assertEquals(4, gr.findNodeByValue(12).edge.weight);
-       // assertEquals(1, gr.findNodeByValue(15).neighbors.size());
-       // assertEquals(0, gr.findNodeByValue(2).neighbors.size());
+    void minimumSpanningTree() {
+        Graph<String> gr = new Graph<>(13);
+        gr.addEdge("a", "d", 2);
+        gr.addEdge("a", "b", 4);
+        gr.addEdge("b", "c", 2);
+        gr.addEdge("c", "f", 9);
+        gr.addEdge("f", "h", 7);
+        gr.addEdge("g", "h", 6);
+        gr.addEdge("g", "d", 5);
+        gr.addEdge("a", "e", 3);
+        gr.addEdge("e", "h", 1);
+        gr.addEdge("g", "e", 5);
+        gr.addEdge("e", "b", 3);
+        gr.addEdge("b", "h", 4);
+        gr.addEdge("b", "f", 8);
+        assertEquals(23,gr.minimumSpanningTree());
     }
 
     @Test
-    void SSSP() throws ElementAlreadyExistException {
-        Graph<String> gr = new Graph<>();
-        gr.addNode("a");
-        gr.addNode("b");
-        gr.addNode("c");
-        gr.addNode("d");
-        gr.addNode("e");
-        gr.addNode("f");
-        gr.addNode("g");
-        gr.addNode("h");
-        gr.addEdge("a","b",2);
-        gr.addEdge("a","c",5);
-        gr.addEdge("c","f",6);
-        gr.addEdge("f","g",7);
-        gr.addEdge("g","h",1);
-        gr.addEdge("e","h",2);
-        gr.addEdge("b","e",4);
-        gr.addEdge("b","d",3);
-        gr.addEdge("d","c",5);
-        gr.addEdge("d","f",1);
-        gr.addEdge("d","e",3);
-        gr.addEdge("e","f",4);
-        gr.addEdge("e","g",8);
+    void smallGraphStringMST(){
+        Graph<String> gs = new Graph<>(13);
+        gs.addEdge("A","B",2);
+        gs.addEdge("B","D",2);
+        gs.addEdge("C","D",3);
+        gs.addEdge("A","D",1);
+        gs.addEdge("D","E",8);
+        assertEquals(14,gs.minimumSpanningTree());
+    }
 
-        assertEquals(9, gr.SSSP("a","h"));
-        // assertEquals(0, gr.findNodeByValue(2).neighbors.size());
+    @Test
+    void minimumSpanningTreeInteger()  {
+        Graph<Integer> gr = new Graph<>(6);
+        gr.addEdge(2, 3, 1);
+        gr.addEdge(6, 5, 1);
+        gr.addEdge(2, 5, 2);
+        gr.addEdge(7, 2, 2);
+        gr.addEdge(1, 2, 4);
+        gr.addEdge(4, 3, 6);
+
+        assertEquals(16,gr.minimumSpanningTree());
+    }
+
+    @Test
+    void addNullValueException() {
+        Graph<Integer> gr = new Graph<>(6);
+        gr.addEdge(2, 3, 1);
+        gr.addEdge(6, 5, 1);
+        gr.addEdge(2, 5, 2);
+        gr.addEdge(7, 2, 2);
+        gr.addEdge(1, 2, 4);
+        gr.addEdge(4, 3, 6);
+        assertThrows(NoSuchElementException.class, () -> gr.addEdge(null,3,2));
+    }
+
+    @Test
+    void singleSourceShortestPathsTest() {
+        Graph<String> gr = new Graph<>(13);
+        gr.addEdge("a", "d", 2);
+        gr.addEdge("a", "b", 4);
+        gr.addEdge("b", "c", 2);
+        gr.addEdge("c", "f", 9);
+        gr.addEdge("f", "h", 7);
+        gr.addEdge("g", "h", 6);
+        gr.addEdge("g", "d", 5);
+        gr.addEdge("a", "e", 3);
+        gr.addEdge("e", "h", 1);
+        gr.addEdge("g", "e", 2);
+        gr.addEdge("e", "b", 3);
+        gr.addEdge("b", "h", 4);
+        gr.addEdge("b", "f", 8);
+
+        assertEquals(5,gr.singleSourceShortestPaths("a","g"));
+        assertEquals(4,gr.singleSourceShortestPaths("a","h"));
+        assertEquals(6,gr.singleSourceShortestPaths("b","d"));
+        assertEquals(8,gr.singleSourceShortestPaths("f","e"));
+
+    }
+
+    @Test
+    void findNullValueException(){
+        Graph<String> gr = new Graph<>(13);
+        gr.addEdge("a", "d", 2);
+        gr.addEdge("a", "b", 4);
+        gr.addEdge("b", "c", 2);
+        gr.addEdge("c", "f", 9);
+        gr.addEdge("f", "h", 7);
+        gr.addEdge("g", "h", 6);
+        gr.addEdge("g", "d", 5);
+        gr.addEdge("a", "e", 3);
+        gr.addEdge("e", "h", 1);
+        gr.addEdge("g", "e", 2);
+        gr.addEdge("e", "b", 3);
+        gr.addEdge("b", "h", 4);
+        gr.addEdge("b", "f", 8);
+
+        assertThrows(NoSuchElementException.class, () -> gr.singleSourceShortestPaths("w","c"));
+
+
     }
 }
